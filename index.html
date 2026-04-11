@@ -9,6 +9,10 @@
 <body>
 
 <div class="container no-print">
+    <div style="text-align: center; margin-bottom: 10px;">
+        <img src="logo.png" alt="Logo Granja" style="width: 150px; height: auto; border-radius: 10px;">
+    </div>
+    
     <h1>🐖 Sistema de Gestión Porcícola</h1>
     <h3 style="text-align: center; color: #555; margin-bottom: 20px;">Vallejo Villamarín</h3>
 
@@ -25,7 +29,9 @@
         </div>
         <div class="mini-form">
             <h4>Nuevo Movimiento Directo</h4>
-            <input id="fDesc" placeholder="Concepto">
+            <label style="font-size: 12px; color: #666;">Fecha (opcional):</label>
+            <input id="fFecha" type="date" style="margin-bottom: 10px;">
+            <input id="fDesc" placeholder="Concepto (Ej: Venta bultos)">
             <input id="fMonto" type="number" placeholder="Monto $">
             <select id="fTipo">
                 <option value="ingreso">Ingreso (+)</option>
@@ -69,7 +75,10 @@
 
 <div id="seccionRecibo">
     <div class="factura-box">
-        <h2 style="text-align: center; margin: 0;">COMPROBANTE</h2>
+        <div style="text-align: center;">
+            <img src="logo.png" alt="Logo" style="width: 80px; height: auto;">
+        </div>
+        <h2 style="text-align: center; margin: 5px 0 0 0;">COMPROBANTE</h2>
         <p style="text-align: center; font-size: 10px; margin: 0;">Granja Porcícola Vallejo Villamarín</p>
         <hr>
         <p><b>Fecha:</b> <span id="printFecha"></span></p>

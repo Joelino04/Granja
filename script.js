@@ -1,74 +1,97 @@
-let finanzas = JSON.parse(localStorage.getItem("vp_finanzas")) || [];
-let inventario = JSON.parse(localStorage.getItem("vp_inventario")) || [];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-function showSection(id) {
+const firebaseConfig = {
+    apiKey: "AIzaSyAghdsuFbejExRSF3sjxxWXb2t6yKjo-pE",
+    authDomain: "granjavallejovillamarin.firebaseapp.com",
+    projectId: "granjavallejovillamarin",
+    storageBucket: "granjavallejovillamarin.firebasestorage.app",
+    messagingSenderId: "167338569968",
+    appId: "1:167338569968:web:17a8e0b3f3d4f632465235",
+    databaseURL: "https://granjavallejovillamarin-default-rtdb.firebaseio.com/"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let finanzas = [];
+let inventario = [];
+
+onValue(ref(db, 'granja/'), (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+        finanzas = data.finanzas || [];
+        inventario = data.inventario || [];
+        renderAll();
+    }
+});
+
+function syncToCloud() {
+    set(ref(db, 'granja/'), { finanzas, inventario });
+}
+
+window.showSection = (id) => {
     document.getElementById("seccionRecibo").style.display = "none";
     document.querySelector(".container").style.display = "block";
     document.querySelectorAll(".section").forEach(s => s.style.display = "none");
     document.getElementById(id).style.display = "block";
-    renderAll();
-}
+};
 
-function cerrarRecibo() {
-    document.getElementById("seccionRecibo").style.display = "none";
-    document.querySelector(".container").style.display = "block";
-    showSection('finanzas');
-}
+window.cerrarRecibo = () => window.showSection('finanzas');
 
-function addFinanzaDirecta() {
+window.addFinanzaDirecta = () => {
     const desc = document.getElementById("fDesc").value;
     const monto = parseFloat(document.getElementById("fMonto").value);
     const tipo = document.getElementById("fTipo").value;
-    if (!desc || isNaN(monto)) return alert("Completa los datos");
+    if (!desc || isNaN(monto)) return alert("Faltan datos");
     finanzas.push({ fecha: new Date().toLocaleString(), tipo, desc, monto });
-    saveAndRender();
+    syncToCloud();
     document.getElementById("fDesc").value = ""; document.getElementById("fMonto").value = "";
-}
+};
 
-function addInventarioDirecto() {
+window.addInventarioDirecto = () => {
     const nombre = document.getElementById("iNombre").value;
     const cant = parseInt(document.getElementById("iCant").value);
-    if (!nombre || isNaN(cant)) return alert("Completa los datos");
+    if (!nombre || isNaN(cant)) return alert("Faltan datos");
     let lote = inventario.find(l => l.nombre.toLowerCase() === nombre.toLowerCase());
     if(lote) lote.cantidad += cant; else inventario.push({ nombre, cantidad: cant });
-    saveAndRender();
+    syncToCloud();
     document.getElementById("iNombre").value = ""; document.getElementById("iCant").value = "";
-}
+};
 
-function deleteFinanza(index) {
-    if (confirm("¿Eliminar?")) { finanzas.splice(finanzas.length - 1 - index, 1); saveAndRender(); }
-}
+window.deleteFinanza = (index) => {
+    if (confirm("¿Eliminar?")) { finanzas.splice(finanzas.length - 1 - index, 1); syncToCloud(); }
+};
 
-function editFinanza(index) {
+window.editFinanza = (index) => {
     let mov = finanzas[finanzas.length - 1 - index];
     let nD = prompt("Descripción:", mov.desc);
     let nM = prompt("Monto:", mov.monto);
-    if (nD && !isNaN(nM)) { mov.desc = nD; mov.monto = parseFloat(nM); saveAndRender(); }
-}
+    if (nD && !isNaN(nM)) { mov.desc = nD; mov.monto = parseFloat(nM); syncToCloud(); }
+};
 
-function deleteLote(index) {
-    if (confirm("¿Eliminar lote?")) { inventario.splice(index, 1); saveAndRender(); }
-}
+window.deleteLote = (index) => {
+    if (confirm("¿Eliminar lote?")) { inventario.splice(index, 1); syncToCloud(); }
+};
 
-function editLote(index) {
+window.editLote = (index) => {
     let lote = inventario[index];
     let nN = prompt("Nombre:", lote.nombre);
     let nC = prompt("Cantidad:", lote.cantidad);
-    if (nN && !isNaN(nC)) { lote.nombre = nN; lote.cantidad = parseInt(nC); saveAndRender(); }
-}
+    if (nN && !isNaN(nC)) { lote.nombre = nN; lote.cantidad = parseInt(nC); syncToCloud(); }
+};
 
-function toggleOpFields() {
+window.toggleOpFields = () => {
     const tipo = document.querySelector('input[name="tipoOp"]:checked').value;
     document.getElementById("fieldsVenta").style.display = (tipo === "venta") ? "block" : "none";
     document.getElementById("fieldsCompra").style.display = (tipo === "compra") ? "block" : "none";
-}
+};
 
-function procesarOperacion() {
+window.procesarOperacion = () => {
     const tipo = document.querySelector('input[name="tipoOp"]:checked').value;
     const entidad = document.getElementById("opEntidad").value;
     const monto = parseFloat(document.getElementById("opMonto").value);
     if (!entidad || isNaN(monto)) return alert("Faltan datos");
-
     let detalle = "";
     if (tipo === "venta") {
         const idx = document.getElementById("selectLoteVenta").value;
@@ -85,52 +108,47 @@ function procesarOperacion() {
         detalle = `${cant} unid. de ${nombre}`;
         finanzas.push({ fecha: new Date().toLocaleString(), tipo: "gasto", desc: `COMPRA: ${entidad} (${detalle})`, monto });
     }
-
-    saveAndRender();
+    syncToCloud();
     document.getElementById("printFecha").innerText = new Date().toLocaleString();
     document.getElementById("printTipo").innerText = tipo.toUpperCase();
     document.getElementById("printEntidad").innerText = entidad;
     document.getElementById("printDetalle").innerText = detalle;
     document.getElementById("printTotal").innerText = monto.toFixed(2);
-    
     document.querySelector(".container").style.display = "none";
     document.getElementById("seccionRecibo").style.display = "block";
-}
-
-function saveAndRender() {
-    localStorage.setItem("vp_finanzas", JSON.stringify(finanzas));
-    localStorage.setItem("vp_inventario", JSON.stringify(inventario));
-    renderAll();
-}
+};
 
 function renderAll() {
     const listaF = document.getElementById("listaFinanzas");
-    let total = 0; listaF.innerHTML = "";
-    finanzas.slice(0).reverse().forEach((m, i) => {
-        const li = document.createElement("li");
-        const color = m.tipo === "ingreso" ? "ingreso" : "gasto";
-        li.innerHTML = `<div style="flex-grow:1">${m.fecha} - ${m.desc}</div>
-            <div class="${color}" style="margin-right:10px">${m.tipo==='ingreso'?'+':'-'} $${m.monto.toFixed(2)}</div>
-            <div><button class="action-btn" onclick="editFinanza(${i})">✏️</button>
-            <button class="action-btn" onclick="deleteFinanza(${i})">🗑️</button></div>`;
-        listaF.appendChild(li);
-        total += m.tipo === "ingreso" ? m.monto : -m.monto;
-    });
-    document.getElementById("balance").innerText = total.toFixed(2);
-    document.getElementById("balance").className = total >= 0 ? "ingreso" : "gasto";
-
+    let total = 0; 
+    if(listaF) {
+        listaF.innerHTML = "";
+        finanzas.slice(0).reverse().forEach((m, i) => {
+            const li = document.createElement("li");
+            const color = m.tipo === "ingreso" ? "ingreso" : "gasto";
+            li.innerHTML = `<div style="flex-grow:1">${m.fecha} - ${m.desc}</div>
+                <div class="${color}" style="margin-right:10px">${m.tipo==='ingreso'?'+':'-'} $${m.monto.toFixed(2)}</div>
+                <div><button class="action-btn" onclick="editFinanza(${i})">✏️</button>
+                <button class="action-btn" onclick="deleteFinanza(${i})">🗑️</button></div>`;
+            listaF.appendChild(li);
+            total += m.tipo === "ingreso" ? m.monto : -m.monto;
+        });
+        document.getElementById("balance").innerText = total.toFixed(2);
+        document.getElementById("balance").className = total >= 0 ? "ingreso" : "gasto";
+    }
     const listaI = document.getElementById("listaInventario");
     const selectV = document.getElementById("selectLoteVenta");
-    listaI.innerHTML = ""; selectV.innerHTML = "";
-    inventario.forEach((l, i) => {
-        if(l.cantidad > 0) {
-            const li = document.createElement("li");
-            li.innerHTML = `<div style="flex-grow:1"><b>${l.nombre}</b>: ${l.cantidad} unid.</div>
-                <div><button class="action-btn" onclick="editLote(${i})">✏️</button>
-                <button class="action-btn" onclick="deleteLote(${i})">🗑️</button></div>`;
-            listaI.appendChild(li);
-            const opt = document.createElement("option"); opt.value = i; opt.innerText = l.nombre; selectV.appendChild(opt);
-        }
-    });
+    if(listaI) {
+        listaI.innerHTML = ""; if(selectV) selectV.innerHTML = "";
+        inventario.forEach((l, i) => {
+            if(l.cantidad > 0) {
+                const li = document.createElement("li");
+                li.innerHTML = `<div style="flex-grow:1"><b>${l.nombre}</b>: ${l.cantidad} unid.</div>
+                    <div><button class="action-btn" onclick="editLote(${i})">✏️</button>
+                    <button class="action-btn" onclick="deleteLote(${i})">🗑️</button></div>`;
+                listaI.appendChild(li);
+                const opt = document.createElement("option"); opt.value = i; opt.innerText = l.nombre; if(selectV) selectV.appendChild(opt);
+            }
+        });
+    }
 }
-renderAll();

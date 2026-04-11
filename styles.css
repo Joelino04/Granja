@@ -1,0 +1,34 @@
+body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin: 0; padding: 20px; }
+.container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+h1 { text-align: center; color: #1b5e20; }
+.menu { display: flex; gap: 10px; margin-bottom: 20px; }
+.menu button { flex: 1; padding: 12px; background: #2e7d32; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.box { padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+.ingreso { color: #2e7d32 !important; font-weight: bold; }
+.gasto { color: #c62828 !important; font-weight: bold; }
+.balance-box { text-align: center; background: #f1f8e9; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
+.mini-form { background: #f9f9f9; padding: 15px; border: 1px dashed #ccc; margin-bottom: 15px; border-radius: 8px; }
+input, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+.btn-small { background: #4caf50; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+.btn-guardar { background: #1976d2; color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.historial-list, .inventory-list { list-style: none; padding: 0; }
+.historial-list li, .inventory-list li { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+.action-btn { background: none; border: none; cursor: pointer; font-size: 16px; margin-left: 5px; }
+
+/* OCULTAR EL RECIBO EN PANTALLA POR DEFECTO */
+#seccionRecibo { display: none; }
+
+.factura-box { border: 2px solid #333; padding: 20px; background: white; max-width: 400px; margin: auto; font-family: monospace; }
+
+/* CONFIGURACIÓN DE IMPRESIÓN REFORZADA */
+@media print {
+    /* Ocultar absolutamente todo lo que no sea el recibo */
+    .no-print, .container, .menu, .box, button { display: none !important; }
+    
+    /* Mostrar solo el contenedor del recibo */
+    #seccionRecibo { display: block !important; position: absolute; top: 0; left: 0; width: 100%; }
+    
+    .factura-box { border: 1px solid #000 !important; width: 100%; max-width: 100%; margin: 0; }
+    
+    body { background: white !important; padding: 0; margin: 0; }
+}

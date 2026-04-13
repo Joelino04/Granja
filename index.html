@@ -28,7 +28,7 @@
         </div>
         <div class="mini-form">
             <input id="fFecha" type="date">
-            <input id="fDesc" placeholder="¿Qué movimiento es?">
+            <input id="fDesc" placeholder="Concepto (Ej: Venta cerdos)">
             <input id="fMonto" type="number" placeholder="Monto $">
             <select id="fTipo">
                 <option value="ingreso">🟢 Ingreso</option>
@@ -53,7 +53,7 @@
 
     <div id="operaciones" class="box section" style="display:none;">
         <h2>🤝 Nueva Operación</h2>
-        <div style="display:flex; justify-content:center; gap:20px; margin-bottom:15px;">
+        <div style="display:flex; justify-content:center; gap:20px; margin-bottom:15px; font-size: 0.9rem;">
             <label><input type="radio" name="tipoOp" value="venta" checked onclick="toggleOpFields()"> <b>Venta</b></label>
             <label><input type="radio" name="tipoOp" value="compra" onclick="toggleOpFields()"> <b>Compra</b></label>
         </div>
@@ -73,24 +73,26 @@
     </div>
 </div>
 
-<div id="seccionRecibo" style="display:none; padding:20px;">
-    <div style="background:white; padding:30px; border-radius:10px; border:2px dashed #999;">
+<div id="seccionRecibo" style="display:none; padding:10px;">
+    <div style="background:white; padding:20px; border-radius:10px; border:2px dashed #999; max-width: 400px; margin: auto;">
         <div style="text-align:center;">
-            <img src="logo.png" style="width:70px;">
+            <img src="logo.png" style="max-width:70px; height:auto;">
             <h3>COMPROBANTE DE PAGO</h3>
             <small>Granja Vallejo Villamarín</small>
         </div>
         <hr>
-        <p><b>Fecha:</b> <span id="printFecha"></span></p>
-        <p><b>Tipo:</b> <span id="printTipo"></span></p>
-        <p><b>Nombre:</b> <span id="printEntidad"></span></p>
-        <p><b>Detalle:</b> <span id="printDetalle"></span></p>
+        <div style="font-size: 0.9rem;">
+            <p><b>Fecha:</b> <span id="printFecha"></span></p>
+            <p><b>Tipo:</b> <span id="printTipo"></span></p>
+            <p><b>Nombre:</b> <span id="printEntidad"></span></p>
+            <p><b>Detalle:</b> <span id="printDetalle"></span></p>
+        </div>
         <hr>
-        <h2 style="text-align:right;">TOTAL: $<span id="printTotal"></span></h2>
+        <h2 style="text-align:right; margin: 0; color: var(--primary);">TOTAL: $<span id="printTotal"></span></h2>
     </div>
     <div class="no-print" style="text-align:center; margin-top:20px;">
-        <button class="btn-main" onclick="window.print()">🖨️ Imprimir</button>
-        <button class="btn-main" style="background:#666;" onclick="cerrarRecibo()">Volver</button>
+        <button class="btn-main" style="width: 120px;" onclick="window.print()">🖨️ Imprimir</button>
+        <button class="btn-main" style="background:#666; width: 120px; margin-left:10px;" onclick="cerrarRecibo()">Volver</button>
     </div>
 </div>
 

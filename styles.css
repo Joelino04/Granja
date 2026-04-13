@@ -1,4 +1,4 @@
-/* Estilos Profesionales - Granja Vallejo Villamarín */
+/* Estilos Profesionales Corregidos - Granja Vallejo Villamarín */
 :root {
     --primary: #2e7d32; 
     --secondary: #f48fb1; 
@@ -13,7 +13,7 @@ body {
     background-color: var(--bg-light);
     background-image: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
     margin: 0;
-    padding: 15px;
+    padding: 10px; /* Menos padding para móviles */
     display: flex;
     justify-content: center;
     color: #333;
@@ -23,6 +23,7 @@ body {
     max-width: 450px;
     width: 100%;
     animation: fadeIn 0.8s ease-in;
+    box-sizing: border-box; /* Importante para el padding */
 }
 
 @keyframes fadeIn {
@@ -30,7 +31,7 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Header y Logo */
+/* Header y Logo - CORREGIDO */
 .header-card {
     text-align: center;
     background: var(--white);
@@ -41,8 +42,9 @@ body {
 }
 
 .logo-img {
-    width: 100px;
-    height: auto;
+    max-width: 150px; /* Tamaño máximo para que no se coma la pantalla */
+    width: 100%; /* Que se adapte si la pantalla es pequeña */
+    height: auto; /* Mantener proporción */
     border-radius: 15px;
     margin-bottom: 10px;
 }
@@ -56,7 +58,7 @@ h1 {
 /* Menú Navegación */
 .menu {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 20px;
 }
 
@@ -64,13 +66,14 @@ h1 {
     flex: 1;
     border: none;
     background: var(--white);
-    padding: 15px 5px;
+    padding: 12px 5px; /* Ajuste de padding */
     border-radius: 15px;
     font-weight: bold;
     color: var(--primary);
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     transition: 0.3s;
+    font-size: 0.9rem; /* Fuente un poco más pequeña */
 }
 
 .menu button:hover {
@@ -82,7 +85,7 @@ h1 {
 /* Secciones Card */
 .box {
     background: var(--white);
-    padding: 20px;
+    padding: 15px; /* Ajuste padding */
     border-radius: 20px;
     box-shadow: var(--shadow);
     margin-bottom: 20px;
@@ -92,33 +95,35 @@ h1 {
 .balance-box {
     background: linear-gradient(45deg, #2e7d32, #66bb6a);
     color: white;
-    padding: 20px;
+    padding: 15px;
     border-radius: 15px;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
+
+h2 { font-size: 1.2rem; margin-top: 0; color: var(--primary); }
 
 /* Formularios */
 .mini-form {
     background: #fdfdfd;
-    padding: 15px;
+    padding: 12px;
     border-radius: 15px;
     border: 1px solid #eee;
 }
 
 input, select {
     width: 100%;
-    padding: 12px;
-    margin: 8px 0;
+    padding: 10px;
+    margin: 5px 0;
     border: 1px solid #ddd;
     border-radius: 10px;
     box-sizing: border-box;
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 .btn-main {
     width: 100%;
-    padding: 15px;
+    padding: 12px;
     border: none;
     border-radius: 12px;
     background: var(--primary);
@@ -126,19 +131,20 @@ input, select {
     font-weight: bold;
     font-size: 1rem;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .btn-main:active { transform: scale(0.98); }
 
 /* Listas */
-ul { list-style: none; padding: 0; margin-top: 20px; }
+ul { list-style: none; padding: 0; margin-top: 15px; }
 li {
-    padding: 15px;
+    padding: 10px 5px;
     border-bottom: 1px solid #f0f0f0;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size: 0.9rem;
 }
 
 .ingreso { color: #2e7d32; font-weight: bold; }
@@ -147,19 +153,23 @@ li {
 .action-btn {
     background: #f5f5f5;
     border: none;
-    padding: 8px;
+    padding: 6px;
     border-radius: 8px;
-    margin-left: 5px;
+    margin-left: 3px;
     cursor: pointer;
 }
 
-/* Imagen de Cerditos */
+/* Imagen de Cerditos - CORREGIDO */
 .img-cerditos {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
+    max-width: 100%; /* Que no se salga del cuadro */
+    height: auto; /* Mantener proporción original */
+    max-height: 200px; /* Limitar la altura para que no ocupe toda la vista */
+    object-fit: cover; /* Recortar si es necesario para mantener estética */
     border-radius: 15px;
     margin-bottom: 15px;
+    display: block; /* Centrado */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 @media print { .no-print { display: none; } }

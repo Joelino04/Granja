@@ -3,94 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Granja Porcícola Vallejo Villamarín</title>
+    <title>Granja Vallejo Villamarín</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="container no-print">
-    <div style="text-align: center; margin-bottom: 10px;">
-        <img src="logo.png" alt="Logo Granja" style="width: 150px; height: auto; border-radius: 10px;">
+    <div class="header-card">
+        <img src="logo.png" alt="Logo Granja" class="logo-img">
+        <h1>Vallejo Villamarín</h1>
+        <p style="margin:0; font-size: 12px; color: #666;">Sistema de Gestión Porcícola</p>
     </div>
-    
-    <h1>🐖 Sistema de Gestión Porcícola</h1>
-    <h3 style="text-align: center; color: #555; margin-bottom: 20px;">Vallejo Villamarín</h3>
 
     <div class="menu">
-        <button onclick="showSection('finanzas')">💰 Finanzas</button>
-        <button onclick="showSection('inventario')">🐖 Inventario</button>
-        <button onclick="showSection('operaciones')">🤝 Ventas y Compras</button>
+        <button onclick="showSection('finanzas')">💰<br>Caja</button>
+        <button onclick="showSection('inventario')">🐖<br>Corrales</button>
+        <button onclick="showSection('operaciones')">📝<br>Registro</button>
     </div>
 
     <div id="finanzas" class="box section">
-        <h2>💰 Gestión de Caja Sincronizada</h2>
         <div class="balance-box">
-            <h3>Balance Total: <span id="balance">0.00</span></h3>
+            <small>BALANCE TOTAL</small>
+            <h3>$ <span id="balance">0.00</span></h3>
         </div>
         <div class="mini-form">
-            <h4>Nuevo Movimiento Directo</h4>
-            <label style="font-size: 12px; color: #666;">Fecha (opcional):</label>
-            <input id="fFecha" type="date" style="margin-bottom: 10px;">
-            <input id="fDesc" placeholder="Concepto (Ej: Venta bultos)">
+            <input id="fFecha" type="date">
+            <input id="fDesc" placeholder="¿Qué movimiento es?">
             <input id="fMonto" type="number" placeholder="Monto $">
             <select id="fTipo">
-                <option value="ingreso">Ingreso (+)</option>
-                <option value="gasto">Gasto (-)</option>
+                <option value="ingreso">🟢 Ingreso</option>
+                <option value="gasto">🔴 Gasto</option>
             </select>
-            <button class="btn-small" onclick="addFinanzaDirecta()">Registrar en Caja</button>
+            <button class="btn-main" onclick="addFinanzaDirecta()">Guardar en Caja</button>
         </div>
-        <ul id="listaFinanzas" class="historial-list"></ul>
+        <ul id="listaFinanzas"></ul>
     </div>
 
     <div id="inventario" class="box section" style="display:none;">
-        <h2>🐖 Control de Inventario</h2>
+        <img src="cerditos.png" alt="Cerditos" class="img-cerditos" onerror="this.style.display='none'">
+        
+        <h2>🐖 Inventario</h2>
         <div class="mini-form">
-            <h4>Agregar Lote Manualmente</h4>
             <input id="iNombre" placeholder="Nombre del Lote">
-            <input id="iCant" type="number" placeholder="Cantidad">
-            <button class="btn-small" onclick="addInventarioDirecto()">Cargar a Inventario</button>
+            <input id="iCant" type="number" placeholder="Cantidad de animales">
+            <button class="btn-main" onclick="addInventarioDirecto()">Agregar al Corral</button>
         </div>
-        <ul id="listaInventario" class="inventory-list"></ul>
+        <ul id="listaInventario"></ul>
     </div>
 
     <div id="operaciones" class="box section" style="display:none;">
-        <h2>🤝 Registrar Venta o Compra</h2>
-        <div class="tipo-operacion">
-            <label class="radio-label"><input type="radio" name="tipoOp" value="venta" checked onclick="toggleOpFields()"> <span class="text-venta">Venta</span></label>
-            <label class="radio-label"><input type="radio" name="tipoOp" value="compra" onclick="toggleOpFields()"> <span class="text-compra">Compra</span></label>
+        <h2>🤝 Nueva Operación</h2>
+        <div style="display:flex; justify-content:center; gap:20px; margin-bottom:15px;">
+            <label><input type="radio" name="tipoOp" value="venta" checked onclick="toggleOpFields()"> <b>Venta</b></label>
+            <label><input type="radio" name="tipoOp" value="compra" onclick="toggleOpFields()"> <b>Compra</b></label>
         </div>
-        <input id="opEntidad" placeholder="Cliente / Proveedor">
-        <div id="fieldsVenta">
-            <select id="selectLoteVenta"></select>
-            <input id="cantVenta" type="number" placeholder="Cantidad">
+        <div class="mini-form">
+            <input id="opEntidad" placeholder="Cliente / Proveedor">
+            <div id="fieldsVenta">
+                <select id="selectLoteVenta"></select>
+                <input id="cantVenta" type="number" placeholder="Cantidad a vender">
+            </div>
+            <div id="fieldsCompra" style="display:none;">
+                <input id="nombreLoteCompra" placeholder="Nombre nuevo lote">
+                <input id="cantCompra" type="number" placeholder="Cantidad comprada">
+            </div>
+            <input id="opMonto" type="number" placeholder="Valor total $">
+            <button class="btn-main" style="background:var(--accent);" onclick="procesarOperacion()">✅ Procesar y Recibo</button>
         </div>
-        <div id="fieldsCompra" style="display:none;">
-            <input id="nombreLoteCompra" placeholder="Nombre Lote">
-            <input id="cantCompra" type="number" placeholder="Cantidad">
-        </div>
-        <input id="opMonto" type="number" placeholder="Monto Total $">
-        <button class="btn-guardar" onclick="procesarOperacion()">Guardar y Ver Comprobante</button>
     </div>
 </div>
 
-<div id="seccionRecibo">
-    <div class="factura-box">
-        <div style="text-align: center;">
-            <img src="logo.png" alt="Logo" style="width: 80px; height: auto;">
+<div id="seccionRecibo" style="display:none; padding:20px;">
+    <div style="background:white; padding:30px; border-radius:10px; border:2px dashed #999;">
+        <div style="text-align:center;">
+            <img src="logo.png" style="width:70px;">
+            <h3>COMPROBANTE DE PAGO</h3>
+            <small>Granja Vallejo Villamarín</small>
         </div>
-        <h2 style="text-align: center; margin: 5px 0 0 0;">COMPROBANTE</h2>
-        <p style="text-align: center; font-size: 10px; margin: 0;">Granja Porcícola Vallejo Villamarín</p>
         <hr>
         <p><b>Fecha:</b> <span id="printFecha"></span></p>
         <p><b>Tipo:</b> <span id="printTipo"></span></p>
         <p><b>Nombre:</b> <span id="printEntidad"></span></p>
         <p><b>Detalle:</b> <span id="printDetalle"></span></p>
         <hr>
-        <h3 style="text-align: right;">TOTAL: $<span id="printTotal"></span></h3>
+        <h2 style="text-align:right;">TOTAL: $<span id="printTotal"></span></h2>
     </div>
-    <div class="no-print" style="text-align: center; margin-top: 10px;">
-        <button class="btn-small" style="width: 150px;" onclick="window.print()">🖨️ Imprimir</button>
-        <button class="btn-small" style="width: 150px; background: #666;" onclick="cerrarRecibo()">Volver</button>
+    <div class="no-print" style="text-align:center; margin-top:20px;">
+        <button class="btn-main" onclick="window.print()">🖨️ Imprimir</button>
+        <button class="btn-main" style="background:#666;" onclick="cerrarRecibo()">Volver</button>
     </div>
 </div>
 

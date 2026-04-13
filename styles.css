@@ -1,34 +1,165 @@
-body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin: 0; padding: 20px; }
-.container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-h1 { text-align: center; color: #1b5e20; }
-.menu { display: flex; gap: 10px; margin-bottom: 20px; }
-.menu button { flex: 1; padding: 12px; background: #2e7d32; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-.box { padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
-.ingreso { color: #2e7d32 !important; font-weight: bold; }
-.gasto { color: #c62828 !important; font-weight: bold; }
-.balance-box { text-align: center; background: #f1f8e9; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
-.mini-form { background: #f9f9f9; padding: 15px; border: 1px dashed #ccc; margin-bottom: 15px; border-radius: 8px; }
-input, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-.btn-small { background: #4caf50; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-.btn-guardar { background: #1976d2; color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; }
-.historial-list, .inventory-list { list-style: none; padding: 0; }
-.historial-list li, .inventory-list li { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-.action-btn { background: none; border: none; cursor: pointer; font-size: 16px; margin-left: 5px; }
-
-/* OCULTAR EL RECIBO EN PANTALLA POR DEFECTO */
-#seccionRecibo { display: none; }
-
-.factura-box { border: 2px solid #333; padding: 20px; background: white; max-width: 400px; margin: auto; font-family: monospace; }
-
-/* CONFIGURACIÓN DE IMPRESIÓN REFORZADA */
-@media print {
-    /* Ocultar absolutamente todo lo que no sea el recibo */
-    .no-print, .container, .menu, .box, button { display: none !important; }
-    
-    /* Mostrar solo el contenedor del recibo */
-    #seccionRecibo { display: block !important; position: absolute; top: 0; left: 0; width: 100%; }
-    
-    .factura-box { border: 1px solid #000 !important; width: 100%; max-width: 100%; margin: 0; }
-    
-    body { background: white !important; padding: 0; margin: 0; }
+/* Estilos Profesionales - Granja Vallejo Villamarín */
+:root {
+    --primary: #2e7d32; 
+    --secondary: #f48fb1; 
+    --accent: #ffa000;
+    --bg-light: #f1f8e9;
+    --white: #ffffff;
+    --shadow: 0 8px 30px rgba(0,0,0,0.1);
 }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-light);
+    background-image: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    margin: 0;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    color: #333;
+}
+
+.container {
+    max-width: 450px;
+    width: 100%;
+    animation: fadeIn 0.8s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header y Logo */
+.header-card {
+    text-align: center;
+    background: var(--white);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+}
+
+.logo-img {
+    width: 100px;
+    height: auto;
+    border-radius: 15px;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin: 0;
+}
+
+/* Menú Navegación */
+.menu {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.menu button {
+    flex: 1;
+    border: none;
+    background: var(--white);
+    padding: 15px 5px;
+    border-radius: 15px;
+    font-weight: bold;
+    color: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: 0.3s;
+}
+
+.menu button:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-3px);
+}
+
+/* Secciones Card */
+.box {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    border-bottom: 5px solid var(--primary);
+}
+
+.balance-box {
+    background: linear-gradient(45deg, #2e7d32, #66bb6a);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Formularios */
+.mini-form {
+    background: #fdfdfd;
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid #eee;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+.btn-main {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: var(--primary);
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-main:active { transform: scale(0.98); }
+
+/* Listas */
+ul { list-style: none; padding: 0; margin-top: 20px; }
+li {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ingreso { color: #2e7d32; font-weight: bold; }
+.gasto { color: #c62828; font-weight: bold; }
+
+.action-btn {
+    background: #f5f5f5;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/* Imagen de Cerditos */
+.img-cerditos {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+@media print { .no-print { display: none; } }

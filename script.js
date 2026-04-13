@@ -44,18 +44,12 @@ window.addFinanzaDirecta = () => {
     const desc = document.getElementById("fDesc").value;
     const monto = parseFloat(document.getElementById("fMonto").value);
     const tipo = document.getElementById("fTipo").value;
-    
-    // Si no eligen fecha, usa la de hoy
-    const fechaFinal = fechaInput ? fechaInput : new Date().toLocaleDateString();
+    const fechaFinal = fechaInput || new Date().toLocaleDateString();
 
-    if (!desc || isNaN(monto)) return alert("Faltan datos (Concepto y Monto)");
-
+    if (!desc || isNaN(monto)) return alert("Completa concepto y monto");
     finanzas.push({ fecha: fechaFinal, tipo, desc, monto });
     syncToCloud();
-    
-    document.getElementById("fDesc").value = ""; 
-    document.getElementById("fMonto").value = "";
-    document.getElementById("fFecha").value = "";
+    document.getElementById("fDesc").value = ""; document.getElementById("fMonto").value = "";
 };
 
 window.addInventarioDirecto = () => {
@@ -69,23 +63,14 @@ window.addInventarioDirecto = () => {
 };
 
 window.deleteFinanza = (index) => {
-    if (confirm("¿Eliminar este registro?")) { 
-        finanzas.splice(finanzas.length - 1 - index, 1); 
-        syncToCloud(); 
-    }
+    if (confirm("¿Eliminar registro?")) { finanzas.splice(finanzas.length - 1 - index, 1); syncToCloud(); }
 };
 
 window.editFinanza = (index) => {
     let mov = finanzas[finanzas.length - 1 - index];
-    let nF = prompt("Editar Fecha (AAAA-MM-DD o texto):", mov.fecha);
-    let nD = prompt("Editar Concepto:", mov.desc);
-    let nM = prompt("Editar Monto:", mov.monto);
-    if (nD && !isNaN(nM)) { 
-        mov.fecha = nF || mov.fecha;
-        mov.desc = nD; 
-        mov.monto = parseFloat(nM); 
-        syncToCloud(); 
-    }
+    let nD = prompt("Concepto:", mov.desc);
+    let nM = prompt("Monto:", mov.monto);
+    if (nD && !isNaN(nM)) { mov.desc = nD; mov.monto = parseFloat(nM); syncToCloud(); }
 };
 
 window.deleteLote = (index) => {
@@ -94,8 +79,8 @@ window.deleteLote = (index) => {
 
 window.editLote = (index) => {
     let lote = inventario[index];
-    let nN = prompt("Nuevo nombre:", lote.nombre);
-    let nC = prompt("Nueva cantidad:", lote.cantidad);
+    let nN = prompt("Nombre:", lote.nombre);
+    let nC = prompt("Cantidad:", lote.cantidad);
     if (nN && !isNaN(nC)) { lote.nombre = nN; lote.cantidad = parseInt(nC); syncToCloud(); }
 };
 
@@ -109,22 +94,21 @@ window.procesarOperacion = () => {
     const tipo = document.querySelector('input[name="tipoOp"]:checked').value;
     const entidad = document.getElementById("opEntidad").value;
     const monto = parseFloat(document.getElementById("opMonto").value);
-    if (!entidad || isNaN(monto)) return alert("Faltan datos");
+    if (!entidad || isNaN(monto)) return alert("Datos incompletos");
     let detalle = "";
     if (tipo === "venta") {
         const idx = document.getElementById("selectLoteVenta").value;
         const cant = parseInt(document.getElementById("cantVenta").value);
-        if (isNaN(cant) || !inventario[idx] || cant > inventario[idx].cantidad) return alert("Stock insuficiente o lote no seleccionado");
+        if (isNaN(cant) || !inventario[idx] || cant > inventario[idx].cantidad) return alert("Error en cantidad o lote");
         inventario[idx].cantidad -= cant;
-        detalle = `${cant} unid. de ${inventario[idx].nombre}`;
+        detalle = `${cant} cerdos de ${inventario[idx].nombre}`;
         finanzas.push({ fecha: new Date().toLocaleDateString(), tipo: "ingreso", desc: `VENTA: ${entidad} (${detalle})`, monto });
     } else {
         const nombre = document.getElementById("nombreLoteCompra").value;
         const cant = parseInt(document.getElementById("cantCompra").value);
-        if (!nombre || isNaN(cant)) return alert("Faltan datos del lote");
         let lote = inventario.find(l => l.nombre.toLowerCase() === nombre.toLowerCase());
         if(lote) lote.cantidad += cant; else inventario.push({ nombre, cantidad: cant });
-        detalle = `${cant} unid. de ${nombre}`;
+        detalle = `${cant} cerdos para ${nombre}`;
         finanzas.push({ fecha: new Date().toLocaleDateString(), tipo: "gasto", desc: `COMPRA: ${entidad} (${detalle})`, monto });
     }
     syncToCloud();
@@ -145,15 +129,14 @@ function renderAll() {
         finanzas.slice(0).reverse().forEach((m, i) => {
             const li = document.createElement("li");
             const color = m.tipo === "ingreso" ? "ingreso" : "gasto";
-            li.innerHTML = `<div style="flex-grow:1"><small>${m.fecha}</small><br>${m.desc}</div>
-                <div class="${color}" style="margin-right:10px">${m.tipo==='ingreso'?'+':'-'} $${m.monto.toFixed(2)}</div>
-                <div><button class="action-btn" onclick="editFinanza(${i})">✏️</button>
+            li.innerHTML = `<div style="line-height:1.2"><small style="color:#999">${m.fecha}</small><br>${m.desc}</div>
+                <div style="display:flex; align-items:center;"><span class="${color}">${m.tipo==='ingreso'?'+':'-'}$${m.monto.toFixed(2)}</span>
+                <button class="action-btn" onclick="editFinanza(${i})">✏️</button>
                 <button class="action-btn" onclick="deleteFinanza(${i})">🗑️</button></div>`;
             listaF.appendChild(li);
             total += m.tipo === "ingreso" ? m.monto : -m.monto;
         });
-        document.getElementById("balance").innerText = total.toFixed(2);
-        document.getElementById("balance").className = total >= 0 ? "ingreso" : "gasto";
+        document.getElementById("balance").innerText = total.toLocaleString();
     }
     const listaI = document.getElementById("listaInventario");
     const selectV = document.getElementById("selectLoteVenta");
@@ -162,7 +145,7 @@ function renderAll() {
         inventario.forEach((l, i) => {
             if(l.cantidad > 0) {
                 const li = document.createElement("li");
-                li.innerHTML = `<div style="flex-grow:1"><b>${l.nombre}</b>: ${l.cantidad} unid.</div>
+                li.innerHTML = `<div><b>${l.nombre}</b><br><small>${l.cantidad} animales</small></div>
                     <div><button class="action-btn" onclick="editLote(${i})">✏️</button>
                     <button class="action-btn" onclick="deleteLote(${i})">🗑️</button></div>`;
                 listaI.appendChild(li);

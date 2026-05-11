@@ -1,14 +1,15 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+// Tu configuración de Firebase actualizada
 const firebaseConfig = {
     apiKey: "AIzaSyAghdsuFbejExRSF3sjxxWXb2t6yKjo-pE",
     authDomain: "granjavallejovillamarin.firebaseapp.com",
+    databaseURL: "https://granjavallejovillamarin-default-rtdb.firebaseio.com/",
     projectId: "granjavallejovillamarin",
     storageBucket: "granjavallejovillamarin.firebasestorage.app",
     messagingSenderId: "167338569968",
-    appId: "1:167338569968:web:17a8e0b3f3d4f632465235",
-    databaseURL: "https://granjavallejovillamarin-default-rtdb.firebaseio.com/"
+    appId: "1:167338569968:web:17a8e0b3f3d4f632465235"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -17,6 +18,7 @@ const db = getDatabase(app);
 let finanzas = [];
 let inventario = [];
 
+// Escuchar cambios en la base de datos
 onValue(ref(db, 'granja/'), (snapshot) => {
     const data = snapshot.val();
     if (data) {
@@ -32,7 +34,8 @@ function syncToCloud() {
 
 window.showSection = (id) => {
     document.getElementById("seccionRecibo").style.display = "none";
-    document.querySelector(".container").style.display = "block";
+    const container = document.querySelector(".container");
+    if (container) container.style.display = "block";
     document.querySelectorAll(".section").forEach(s => s.style.display = "none");
     document.getElementById(id).style.display = "block";
 };
@@ -136,7 +139,8 @@ function renderAll() {
             listaF.appendChild(li);
             total += m.tipo === "ingreso" ? m.monto : -m.monto;
         });
-        document.getElementById("balance").innerText = total.toLocaleString();
+        const balanceEl = document.getElementById("balance");
+        if(balanceEl) balanceEl.innerText = total.toLocaleString();
     }
     const listaI = document.getElementById("listaInventario");
     const selectV = document.getElementById("selectLoteVenta");

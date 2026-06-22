@@ -19,6 +19,26 @@
         <button onclick="showSection('finanzas')">💰<br>Caja</button>
         <button onclick="showSection('inventario')">🐖<br>Corrales</button>
         <button onclick="showSection('operaciones')">📝<br>Registro</button>
+        <button onclick="showSection('reportes')">📊<br>Gastos</button>
+    </div>
+
+    <div class="dashboard-grid no-print">
+        <div class="card-dash">
+            <h4>Ingresos Totales</h4>
+            <p id="dashIngresos" class="ingreso">$0.00</p>
+        </div>
+        <div class="card-dash">
+            <h4>Inversión / Gastos</h4>
+            <p id="dashGastos" class="gasto">$0.00</p>
+        </div>
+        <div class="card-dash">
+            <h4>Cerdos Totales</h4>
+            <p id="dashCerdos" style="color: #ffa000;">0 u.</p>
+        </div>
+        <div class="card-dash" style="border-top: 5px solid #0288d1;">
+            <h4>Proyección de Venta 🚀</h4>
+            <p id="dashProyeccion" style="color: #0288d1;">$0.00</p>
+        </div>
     </div>
 
     <div id="finanzas" class="box section">
@@ -26,6 +46,9 @@
             <small>BALANCE TOTAL</small>
             <h3>$ <span id="balance">0.00</span></h3>
         </div>
+
+        <button class="btn-main" style="background:#1565c0; margin-top: 0; margin-bottom: 20px;" onclick="exportarExcel()">📊 Descargar Reporte Excel (CSV)</button>
+
         <div class="mini-form">
             <input id="fFecha" type="date">
             <input id="fDesc" placeholder="Concepto (Ej: Venta cerdos)">
@@ -36,19 +59,33 @@
             </select>
             <button class="btn-main" onclick="addFinanzaDirecta()">Guardar en Caja</button>
         </div>
-        <ul id="listaFinanzas"></ul>
+
+        <div style="margin-top: 20px; display: flex; gap: 10px; flex-direction: column;" class="no-print">
+            <input id="buscarFinanza" placeholder="🔍 Buscar por concepto (Ej: Alimento)..." oninput="renderAll()">
+            <div style="display: flex; gap: 5px;">
+                <button id="btnFiltro_todos" onclick="setFiltro('todos')" style="flex:1; padding: 10px; border-radius: 12px; border: 1px solid #ddd; font-weight: bold; cursor:pointer;">Todos</button>
+                <button id="btnFiltro_ingreso" onclick="setFiltro('ingreso')" style="flex:1; padding: 10px; border-radius: 12px; border: 1px solid #ddd; font-weight: bold; cursor:pointer;">Ingresos</button>
+                <button id="btnFiltro_gasto" onclick="setFiltro('gasto')" style="flex:1; padding: 10px; border-radius: 12px; border: 1px solid #ddd; font-weight: bold; cursor:pointer;">Gastos</button>
+            </div>
+        </div>
+
+        <ul id="listaFinanzas" style="margin-top: 15px; padding: 0;"></ul>
     </div>
 
     <div id="inventario" class="box section" style="display:none;">
-        <img src="cerditos.png" alt="Cerditos" class="img-cerditos" onerror="this.style.display='none'">
+        <img src="cerditos.jpg" alt="Cerditos" class="img-cerditos" onerror="this.style.display='none'">
         
-        <h2>🐖 Inventario</h2>
+        <h2>🐖 Inventario de Corrales</h2>
         <div class="mini-form">
             <input id="iNombre" placeholder="Nombre del Lote">
             <input id="iCant" type="number" placeholder="Cantidad de animales">
+            
+            <label style="font-size: 13px; color: #666; display:block; margin: 8px 0 2px 5px; font-weight: bold;">Fecha de Ingreso del Lote:</label>
+            <input id="iFecha" type="date">
+            
             <button class="btn-main" onclick="addInventarioDirecto()">Agregar al Corral</button>
         </div>
-        <ul id="listaInventario"></ul>
+        <ul id="listaInventario" style="padding: 0; margin-top: 15px;"></ul>
     </div>
 
     <div id="operaciones" class="box section" style="display:none;">
@@ -71,6 +108,63 @@
             <button class="btn-main" style="background:var(--accent);" onclick="procesarOperacion()">✅ Procesar y Recibo</button>
         </div>
     </div>
+
+    <div id="reportes" class="box section" style="display:none;">
+        <h2>📊 Distribución y Optimización de Gastos</h2>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Monitoreo en tiempo real para alivianar los costos de producción.</p>
+        
+        <div class="dashboard-grid" style="margin-bottom: 20px;">
+            <div class="card-dash" style="border-top: 5px solid #ffa000;">
+                <h4>Inversión Alimento / Cerdo</h4>
+                <p id="alertAlimentoPorCerdo" style="color: #ffa000;">$0.00</p>
+            </div>
+            <div class="card-dash" style="border-top: 5px solid #e74c3c;">
+                <h4>Mayor Impacto</h4>
+                <p id="alertMayorGasto" style="color: #e74c3c; font-size: 1.1rem; padding-top: 5px;">---</p>
+            </div>
+            <div class="card-dash" style="border-top: 5px solid #2e7d32;">
+                <h4>Meta de Ahorro Local</h4>
+                <p id="alertMetaAhorro" style="color: #2e7d32;">$0.00</p>
+            </div>
+        </div>
+
+        <div class="grafica-contenedor">
+            <h4 style="margin-top:0; color:#333;">📉 Inversión por Categorías</h4>
+            <div class="barra-categoria">
+                <span class="tag-cat">🌾 Alimento:</span>
+                <div class="progreso-bg"><div id="barAlimento" class="progreso-fill" style="background: #ffa000;"></div></div>
+                <span id="txtAlimento" class="monto-cat">$0.00</span>
+            </div>
+            <div class="barra-categoria">
+                <span class="tag-cat">💊 Sanidad/Medicina:</span>
+                <div class="progreso-bg"><div id="barSalud" class="progreso-fill" style="background: #e74c3c;"></div></div>
+                <span id="txtSalud" class="monto-cat">$0.00</span>
+            </div>
+            <div class="barra-categoria">
+                <span class="tag-cat">🔨 Infraestructura:</span>
+                <div class="progreso-bg"><div id="barInfra" class="progreso-fill" style="background: #2980b9;"></div></div>
+                <span id="txtInfra" class="monto-cat">$0.00</span>
+            </div>
+            <div class="barra-categoria">
+                <span class="tag-cat">🚚 Logística/Otros:</span>
+                <div class="progreso-bg"><div id="barOtros" class="progreso-fill" style="background: #7f8c8d;"></div></div>
+                <span id="txtOtros" class="monto-cat">$0.00</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 25px;">
+            <h4 style="color:#333; margin-bottom:10px;">⚠️ Top 3 Golpes más Altos al Bolsillo</h4>
+            <ul id="listaTopGastos" style="padding:0; margin:0; background:#fff; border-radius:15px; border:1px solid #eee;"></ul>
+        </div>
+
+        <div class="consejo-box">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                <span style="font-size: 1.3rem;">💡</span>
+                <strong style="color: var(--primary); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Recordatorio de Eficiencia</strong>
+            </div>
+            <p id="textoConsejo" class="consejo-animacion">Cargando sugerencias de optimización...</p>
+        </div>
+    </div>
 </div>
 
 <div id="seccionRecibo" style="display:none; padding:10px;">
@@ -85,10 +179,10 @@
             <p><b>Fecha:</b> <span id="printFecha"></span></p>
             <p><b>Tipo:</b> <span id="printTipo"></span></p>
             <p><b>Nombre:</b> <span id="printEntidad"></span></p>
-            <p><b>Detalle:</b> <span id="printDetalle"></span></p>
+            <p><b>Detaille:</b> <span id="printDetalle"></span></p>
         </div>
         <hr>
-        <h2 style="text-align:right; margin: 0; color: var(--primary);">TOTAL: $<span id="printTotal"></span></h2>
+        <div style="text-align:right; margin: 0; color: var(--primary);">TOTAL: $<span id="printTotal"></span></div>
     </div>
     <div class="no-print" style="text-align:center; margin-top:20px;">
         <button class="btn-main" style="width: 120px;" onclick="window.print()">🖨️ Imprimir</button>
@@ -96,6 +190,8 @@
     </div>
 </div>
 
-<script type="module" src="script.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

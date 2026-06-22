@@ -20,7 +20,6 @@ body {
 }
 
 .container {
-    /* AQUÍ ESTÁ EL CAMBIO: En PC será más ancho, en celular ocupará el 95% */
     width: 95%;
     max-width: 900px; 
     animation: fadeIn 0.8s ease-in;
@@ -82,9 +81,55 @@ h1 {
     transform: translateY(-3px);
 }
 
+/* --- CLASES DE COLORES PARA MOVIMIENTOS --- */
+.ingreso {
+    color: #27ae60 !important;
+    font-weight: bold;
+}
+
+.gasto {
+    color: #e74c3c !important;
+    font-weight: bold;
+}
+
+/* --- NUEVO DISEÑO DE TARJETAS DASHBOARD --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.card-dash {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    border-top: 5px solid var(--primary);
+    transition: transform 0.2s;
+}
+
+.card-dash:hover {
+    transform: translateY(-3px);
+}
+
+.card-dash h4 {
+    margin: 0 0 10px 0;
+    color: #666;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-dash p {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
 /* --- DISEÑO DE COLUMNAS PARA PC --- */
 @media (min-width: 768px) {
-    /* Cuando la pantalla es grande, las secciones se ponen una al lado de otra */
     .grid-pc {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -175,4 +220,86 @@ li {
     font-size: 1.1rem;
 }
 
+/* --- ESTILOS DE LA SECCIÓN DE GASTOS Y GRÁFICAS --- */
+.grafica-contenedor {
+    background: #fdfdfd;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid #eee;
+    margin-top: 15px;
+}
+
+.barra-categoria {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.tag-cat {
+    width: 140px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.progreso-bg {
+    flex: 1;
+    background-color: #e0e0e0;
+    height: 14px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progreso-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.monto-cat {
+    width: 90px;
+    text-align: right;
+    font-weight: bold;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.consejo-box {
+    background: #fff8e1;
+    border-left: 6px solid var(--accent);
+    padding: 18px;
+    border-radius: 18px;
+    margin-top: 25px;
+    box-shadow: 0 4px 15px rgba(255, 160, 0, 0.05);
+}
+
+#textoConsejo {
+    margin: 5px 0 0 0;
+    font-size: 0.95rem;
+    color: #5d4037;
+    line-height: 1.4;
+}
+
+.consejo-animacion {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
+}
+
 @media print { .no-print { display: none; } }
+
+@media (max-width: 480px) {
+    .barra-categoria {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 10px;
+    }
+    .tag-cat, .monto-cat {
+        width: 100%;
+        text-align: left;
+    }
+}
